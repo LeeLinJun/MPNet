@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 2.6.0)
+set(CMAKE_EXE_LINKER_FLAGS "-lgthread-2.0")
+
 
 # pull in the pods macros. See cmake/pods.cmake for documentation
 set(POD_NAME viewer)

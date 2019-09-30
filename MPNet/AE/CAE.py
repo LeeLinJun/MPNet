@@ -4,7 +4,7 @@ import torch
 import torchvision
 from torch import nn
 from torch.autograd import Variable
-from data_loader import load_dataset
+from data_loader import load_dataset_para as load_dataset
 
 
 class Encoder(nn.Module):
@@ -57,7 +57,7 @@ def main(args):
 	optimizer = torch.optim.Adagrad(params)
 	total_loss=[]
 	for epoch in range(args.num_epochs):
-		print "epoch" + str(epoch)
+		print("epoch" + str(epoch))
 		avg_loss=0
 		for i in range(0, len(obs), args.batch_size):
 			decoder.zero_grad()
@@ -66,7 +66,7 @@ def main(args):
 				inp = obs[i:i+args.batch_size]
 			else:
 				inp = obs[i:]
-			inp=torch.from_numpy(inp)
+			inp=torch.from_numpy(inp).float()
 			inp =Variable(inp).cuda()
 			# ===================forward=====================
 			h = encoder(inp)
@@ -74,27 +74,27 @@ def main(args):
 			keys=encoder.state_dict().keys()
 			W=encoder.state_dict()['encoder.6.weight'] # regularize or contracting last layer of encoder. Print keys to displace the layers name. 
 			loss = loss_function(W,inp,output,h)
-			avg_loss=avg_loss+loss.data[0]
+			avg_loss=avg_loss+loss.data.item()
 			# ===================backward====================
 			loss.backward()
 			optimizer.step()
-		print "--average loss:"
-		print avg_loss/(len(obs)/args.batch_size)
+		print("--average loss:")
+		print(avg_loss/(len(obs)/args.batch_size))
 		total_loss.append(avg_loss/(len(obs)/args.batch_size))
 
 	avg_loss=0
 	for i in range(len(obs)-5000, len(obs), args.batch_size):
 		inp = obs[i:i+args.batch_size]
-		inp=torch.from_numpy(inp)
+		inp=torch.from_numpy(inp).float()
 		inp =Variable(inp).cuda()
 		# ===================forward=====================
 		output = encoder(inp)
 		output = decoder(output)
 		loss = mse_loss(output,inp)
-		avg_loss=avg_loss+loss.data[0]
+		avg_loss=avg_loss+loss.data.item()
 		# ===================backward====================
-	print "--Validation average loss:"
-	print avg_loss/(5000/args.batch_size)
+	print("--Validation average loss:")
+	print(avg_loss/(5000/args.batch_size))
 
 
     

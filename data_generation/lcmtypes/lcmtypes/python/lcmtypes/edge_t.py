@@ -16,6 +16,10 @@ import lcmtypes.vertex_t
 class edge_t(object):
     __slots__ = ["vertex_src", "vertex_dst", "trajectory"]
 
+    __typenames__ = ["lcmtypes.vertex_t", "lcmtypes.vertex_t", "lcmtypes.trajectory_t"]
+
+    __dimensions__ = [None, None, None]
+
     def __init__(self):
         self.vertex_src = lcmtypes.vertex_t()
         self.vertex_dst = lcmtypes.vertex_t()
@@ -58,7 +62,7 @@ class edge_t(object):
         if edge_t in parents: return 0
         newparents = parents + [edge_t]
         tmphash = (0x1fae492d71eedf94+ lcmtypes.vertex_t._get_hash_recursive(newparents)+ lcmtypes.vertex_t._get_hash_recursive(newparents)+ lcmtypes.trajectory_t._get_hash_recursive(newparents)) & 0xffffffffffffffff
-        tmphash  = (((tmphash<<1)&0xffffffffffffffff)  + (tmphash>>63)) & 0xffffffffffffffff
+        tmphash  = (((tmphash<<1)&0xffffffffffffffff) + (tmphash>>63)) & 0xffffffffffffffff
         return tmphash
     _get_hash_recursive = staticmethod(_get_hash_recursive)
     _packed_fingerprint = None
